@@ -52,7 +52,7 @@ export default function Navbar() {
         </Link>
 
         {/* Chat Icon for small screens */}
-        <Link href="/chat" passHref>
+        <Link href="/chatbot" passHref>
           <button>
             <FaCommentDots className="text-gray-600 w-5 h-5" />
           </button>

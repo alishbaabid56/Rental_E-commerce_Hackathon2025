@@ -1,5 +1,3 @@
-// 
-
 'use client';
 
 import { FaHeart, FaRegHeart, FaStar } from 'react-icons/fa';
@@ -8,8 +6,8 @@ import { fetchCarsQuery } from '@/sanity/queries';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import Reviews from '@/components/Review';;
-import FetchCarsPage from '@/app/fetchcars/page';
+import Reviews from '@/components/Review';
+import FetchCarsPage from '@/app/homePage/page';
 
 type Car = {
   _id: string;
@@ -60,11 +58,11 @@ export default function CarDetailsPage({ params }: { params: { id: string } }) {
 
     if (selectedCapacity) {
       const capacityMap: { [key: string]: number } = {
-        "2 Person": 2,
-        "4 Person": 4,
-        "5 Person": 5,
-        "6 Person": 6,
-        "7 or More": 7,
+        '2 Person': 2,
+        '4 Person': 4,
+        '5 Person': 5,
+        '6 Person': 6,
+        '7 or More': 7,
       };
       filtered = filtered.filter((car) => car.seatingCapacity >= capacityMap[selectedCapacity!]);
     }
@@ -79,20 +77,20 @@ export default function CarDetailsPage({ params }: { params: { id: string } }) {
   }
 
   const types = [
-    { name: "Sport", count: 10 },
-    { name: "SUV", count: 12 },
-    { name: "Gasoline", count: 16 },
-    { name: "Sedan", count: 20 },
-    { name: "Hybrid", count: 14 },
-    { name: "Hatchback", count: 14 },
+    { name: 'Sport', count: 10 },
+    { name: 'SUV', count: 12 },
+    { name: 'Gasoline', count: 16 },
+    { name: 'Sedan', count: 20 },
+    { name: 'Hybrid', count: 14 },
+    { name: 'Hatchback', count: 14 },
   ];
 
   const capacities = [
-    { name: "2 Person", count: 10 },
-    { name: "4 Person", count: 14 },
-    { name: "5 Person", count: 8 },
-    { name: "6 Person", count: 12 },
-    { name: "7 or More", count: 16 },
+    { name: '2 Person', count: 10 },
+    { name: '4 Person', count: 14 },
+    { name: '5 Person', count: 8 },
+    { name: '6 Person', count: 12 },
+    { name: '7 or More', count: 16 },
   ];
 
   return (
@@ -205,7 +203,7 @@ export default function CarDetailsPage({ params }: { params: { id: string } }) {
 
           {/* Car Details */}
           <p className="text-gray-600 mb-4">
-            NISMO has become the embodiment of {car.name}'s outstanding performance, inspired by the most unforgiving proving ground, the “race track.”
+            NISMO has become the embodiment of {car.name}s outstanding performance, inspired by the most unforgiving proving ground, the &quot;race track.&quot;
           </p>
           <ul className="space-y-2 text-sm sm:text-base">
             {/* Type and Capacity */}

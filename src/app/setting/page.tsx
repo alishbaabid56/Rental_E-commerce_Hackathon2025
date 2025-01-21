@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { FaMoon, FaSun } from 'react-icons/fa'; // For moon and sun icons
 import Link from "next/link"; // Importing Next.js Link component
+import Image from 'next/image'; // Import the Image component from next/image
 
 // Define the type for user settings
 interface UserSettings {
@@ -239,9 +240,11 @@ export default function SettingsPage() {
                 />
                 {userSettings.profilePicture && (
                   <div className="mt-4">
-                    <img
+                    <Image
                       src={userSettings.profilePicture}
                       alt="Profile"
+                      width={96} // Set width
+                      height={96} // Set height
                       className="w-24 h-24 rounded-full object-cover"
                     />
                   </div>

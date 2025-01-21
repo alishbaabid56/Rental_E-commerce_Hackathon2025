@@ -1,10 +1,10 @@
 
 'use client';
 
-import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { GiCarDoor } from "react-icons/gi";
-import { BiCog } from "react-icons/bi";
-import { FaUsers } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa"; // Heart icons
+import { GiCarDoor } from "react-icons/gi"; // Fuel icon
+import { BiCog } from "react-icons/bi"; // Transmission icon
+import { FaUsers } from "react-icons/fa"; // Seats icon
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { fetchCarsQuery } from "@/sanity/queries";
@@ -54,26 +54,12 @@ export default function FetchCarsPage() {
 
     if (isCarInWishlist) {
       updatedWishlist = updatedWishlist.filter((item) => item._id !== car._id);
-      addNotification(`${car.name} removed from wishlist`);
     } else {
       updatedWishlist.push(car);
-      addNotification(`${car.name} added to wishlist`);
     }
 
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
     setWishlist(updatedWishlist);
-  };
-
-  const addNotification = (text: string) => {
-    const newNotification = {
-      id: Date.now(),
-      text,
-      isRead: false,
-    };
-
-    const storedNotifications = JSON.parse(localStorage.getItem("notifications") || "[]");
-    const updatedNotifications = [newNotification, ...storedNotifications];
-    localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
   };
 
   const isCarInWishlist = (car: Car) =>
@@ -100,6 +86,7 @@ export default function FetchCarsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+         
           <div className="flex items-center space-x-4">
             <input
               type="number"
@@ -164,7 +151,7 @@ export default function FetchCarsPage() {
               <div className="flex items-center text-gray-500 text-sm mt-6 space-x-4">
                 <div className="flex items-center space-x-1">
                   <GiCarDoor className="w-4 h-4 text-gray-500" />
-                  <p>{car.fuelCapacity}</p>
+                  <p>{car.fuelCapacity}L</p>
                 </div>
                 <div className="flex items-center space-x-1">
                   <BiCog className="w-4 h-4 text-gray-500" />
@@ -231,7 +218,7 @@ export default function FetchCarsPage() {
               <div className="flex items-center text-gray-500 text-sm mt-6 space-x-4">
                 <div className="flex items-center space-x-1">
                   <GiCarDoor className="w-4 h-4 text-gray-500" />
-                  <p>{car.fuelCapacity}</p>
+                  <p>{car.fuelCapacity}L</p>
                 </div>
                 <div className="flex items-center space-x-1">
                   <BiCog className="w-4 h-4 text-gray-500" />
@@ -269,8 +256,5 @@ export default function FetchCarsPage() {
     </div>
   );
 }
-
-
-
 
 
