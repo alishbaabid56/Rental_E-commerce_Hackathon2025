@@ -8,7 +8,7 @@ import { fetchCarsQuery } from '@/sanity/queries';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import Reviews from '@/components/Review';
+import Reviews from '@/components/Review';;
 import FetchCarsPage from '@/app/fetchcars/page';
 
 type Car = {
