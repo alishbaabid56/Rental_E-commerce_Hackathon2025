@@ -26,7 +26,7 @@ export default function Navbar() {
               height={40}
             />
           ) : (
-            <Link href="/login" passHref>
+            <Link href="/signin" passHref>
               <FaUser className="text-gray-600 w-5 h-5 cursor-pointer" />
             </Link>
           )}

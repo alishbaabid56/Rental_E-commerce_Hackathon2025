@@ -1,5 +1,4 @@
-
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
 
@@ -11,7 +10,18 @@ export default function NotificationsPage() {
   // Fetch notifications from local storage on component mount
   useEffect(() => {
     const storedNotifications = JSON.parse(localStorage.getItem("notifications") || "[]");
-    setNotifications(storedNotifications);
+    if (storedNotifications.length === 0) {
+      // If no notifications are found in local storage, add some sample notifications
+      const sampleNotifications = [
+        { id: 1, text: "New car added to the collection.", isRead: false },
+        { id: 2, text: "Price update for the car rental service.", isRead: false },
+        { id: 3, text: "Your wishlist has been updated.", isRead: false },
+      ];
+      setNotifications(sampleNotifications);
+      localStorage.setItem("notifications", JSON.stringify(sampleNotifications));
+    } else {
+      setNotifications(storedNotifications);
+    }
   }, []);
 
   const handleMarkAsRead = (id: number) => {
@@ -28,91 +38,52 @@ export default function NotificationsPage() {
   };
 
   const handleDelete = (id: number) => {
-    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
-    // Update local storage
     const updatedNotifications = notifications.filter((notification) => notification.id !== id);
+    setNotifications(updatedNotifications);
     localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
-  };
-
-  const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((notification) => ({ ...notification, isRead: true })));
-    // Update local storage
-    const updatedNotifications = notifications.map((notification) => ({
-      ...notification,
-      isRead: true,
-    }));
-    localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
-  };
-
-  const handleDeleteAll = () => {
-    setNotifications([]);
-    // Clear local storage
-    localStorage.removeItem("notifications");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6">
-      <h1 className="text-4xl text-center font-bold text-blue-900 mb-8">
-        Your Notifications
-      </h1>
-
-      <div className="space-y-4 max-w-2xl mx-auto">
-        {notifications.map((notification) => (
-          <div
-            key={notification.id}
-            className={`relative bg-white shadow-xl p-6 rounded-2xl border-l-4 ${
-              notification.isRead ? "border-blue-500" : "border-blue-300"
-            } transition-all duration-300 ease-in-out transform hover:scale-105`}
-          >
-            <p className="text-gray-800 text-lg">{notification.text}</p>
-            <div className="flex justify-between items-center mt-4">
-              <button
-                onClick={() => handleMarkAsRead(notification.id)}
-                className={`px-4 py-2 text-sm font-medium rounded-lg ${
+    <div className="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
+        <h1 className="text-3xl font-bold text-center text-blue-800 mb-6">Notifications</h1>
+        {notifications.length === 0 ? (
+          <p className="text-gray-500 text-center">No notifications to show.</p>
+        ) : (
+          <ul className="space-y-4">
+            {notifications.map((notification) => (
+              <li
+                key={notification.id}
+                className={`p-4 rounded-lg border ${
                   notification.isRead
-                    ? "bg-blue-300 text-white cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                }`}
-                disabled={notification.isRead}
+                    ? "bg-gray-100 border-gray-300"
+                    : "bg-blue-50 border-blue-300"
+                } shadow-sm transition-all duration-300 hover:shadow-md`}
               >
-                {notification.isRead ? "Marked as Read" : "Mark as Read"}
-              </button>
-              <button
-                onClick={() => handleDelete(notification.id)}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </div>
-            {notification.isRead && (
-              <div className="absolute top-4 right-4 text-blue-600 text-2xl">
-                ✓
-              </div>
-            )}
-          </div>
-        ))}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                  <p className="text-gray-700 flex-1">{notification.text}</p>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    {!notification.isRead && (
+                      <button
+                        className="text-blue-600 font-medium hover:underline hover:text-blue-700 transition-colors duration-200"
+                        onClick={() => handleMarkAsRead(notification.id)}
+                      >
+                        Mark as Read
+                      </button>
+                    )}
+                    <button
+                      className="text-red-600 font-medium hover:underline hover:text-red-700 transition-colors duration-200"
+                      onClick={() => handleDelete(notification.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-
-      {notifications.length > 0 && (
-        <div className="flex justify-center mt-8 space-x-4">
-          <button
-            onClick={handleMarkAllAsRead}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
-          >
-            Mark All as Read
-          </button>
-          <button
-            onClick={handleDeleteAll}
-            className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
-          >
-            Delete All
-          </button>
-        </div>
-      )}
-
-      {notifications.length === 0 && (
-        <p className="text-center text-gray-500 mt-8 text-lg">No notifications available.</p>
-      )}
     </div>
   );
 }

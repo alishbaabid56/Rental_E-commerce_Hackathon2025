@@ -1,4 +1,6 @@
 
+
+
 'use client';
 
 import { FaHeart, FaRegHeart } from "react-icons/fa"; // Heart icons
@@ -11,6 +13,7 @@ import { fetchCarsQuery } from "@/sanity/queries";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+// Car type definition
 type Car = {
   _id: string;
   name: string;
@@ -30,6 +33,7 @@ export default function FetchCarsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterByPrice, setFilterByPrice] = useState<number | null>(null);
   const [wishlist, setWishlist] = useState<Car[]>([]);
+  const [notification, setNotification] = useState<string | null>(null); // Notification state
 
   // Fetch cars data
   useEffect(() => {
@@ -54,8 +58,10 @@ export default function FetchCarsPage() {
 
     if (isCarInWishlist) {
       updatedWishlist = updatedWishlist.filter((item) => item._id !== car._id);
+      showNotification(`${car.name} removed from wishlist.`);
     } else {
       updatedWishlist.push(car);
+      showNotification(`${car.name} added to wishlist.`);
     }
 
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
@@ -64,6 +70,14 @@ export default function FetchCarsPage() {
 
   const isCarInWishlist = (car: Car) =>
     wishlist.some((item) => item._id === car._id);
+
+  // Function to show notification
+  const showNotification = (message: string) => {
+    setNotification(message); // Set the notification message
+    setTimeout(() => {
+      setNotification(null); // Clear the notification after 3 seconds
+    }, 3000);
+  };
 
   // Filter and search functionality
   const filteredCars = cars.filter((car) => {
@@ -76,6 +90,13 @@ export default function FetchCarsPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
+      {/* Notification */}
+      {notification && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg z-50">
+          {notification}
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Search Bar and Price Filter */}
         <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-8 space-y-4 sm:space-y-0">
@@ -86,7 +107,6 @@ export default function FetchCarsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-         
           <div className="flex items-center space-x-4">
             <input
               type="number"
@@ -117,65 +137,12 @@ export default function FetchCarsPage() {
         {/* Filtered Cars Section */}
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
           {filteredCars.slice(0, 4).map((car) => (
-            <div
+            <CarCard
               key={car._id}
-              className="bg-white shadow-md rounded-lg p-6 relative"
-            >
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">{car.name}</h3>
-                <button onClick={() => toggleWishlist(car)}>
-                  {isCarInWishlist(car) ? (
-                    <FaHeart className="w-6 h-6 text-red-500" />
-                  ) : (
-                    <FaRegHeart className="w-6 h-6 text-gray-400" />
-                  )}
-                </button>
-              </div>
-
-              <div className="mt-2">
-                <p className="text-sm text-gray-500">{car.type}</p>
-              </div>
-
-              {/* Image */}
-              <div className="mt-4 mb-4 flex justify-center relative">
-                <Image
-                  src={car.imageUrl}
-                  alt={car.name}
-                  width={232}
-                  height={128}
-                  className="w-auto h-auto object-contain"
-                />
-              </div>
-
-              {/* Details */}
-              <div className="flex items-center text-gray-500 text-sm mt-6 space-x-4">
-                <div className="flex items-center space-x-1">
-                  <GiCarDoor className="w-4 h-4 text-gray-500" />
-                  <p>{car.fuelCapacity}L</p>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <BiCog className="w-4 h-4 text-gray-500" />
-                  <p>{car.transmission}</p>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <FaUsers className="w-4 h-4 text-gray-500" />
-                  <p>{car.seatingCapacity} people</p>
-                </div>
-              </div>
-
-              {/* Price */}
-              <div className="flex justify-between items-center mt-4">
-                <p className="text-lg font-bold">
-                  ${car.pricePerDay}.00{" "}
-                  <span className="text-gray-400 text-[14px]">/day</span>
-                </p>
-                <Link href={`/car/${car._id}`}>
-                  <button className="bg-blue-700 text-white px-4 py-2 text-sm rounded-md">
-                    Rent Now
-                  </button>
-                </Link>
-              </div>
-            </div>
+              car={car}
+              isCarInWishlist={isCarInWishlist}
+              toggleWishlist={toggleWishlist}
+            />
           ))}
         </div>
 
@@ -183,72 +150,19 @@ export default function FetchCarsPage() {
         <h2 className="text-2xl font-bold mt-10">Recommended Cars</h2>
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-6">
           {filteredCars.slice(4).map((car) => (
-            <div
+            <CarCard
               key={car._id}
-              className="bg-white shadow-md rounded-lg p-6 relative"
-            >
-              {/* Same card structure as above */}
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">{car.name}</h3>
-                <button onClick={() => toggleWishlist(car)}>
-                  {isCarInWishlist(car) ? (
-                    <FaHeart className="w-6 h-6 text-red-500" />
-                  ) : (
-                    <FaRegHeart className="w-6 h-6 text-gray-400" />
-                  )}
-                </button>
-              </div>
-
-              <div className="mt-2">
-                <p className="text-sm text-gray-500">{car.type}</p>
-              </div>
-
-              {/* Image */}
-              <div className="mt-4 mb-4 flex justify-center relative">
-                <Image
-                  src={car.imageUrl}
-                  alt={car.name}
-                  width={232}
-                  height={128}
-                  className="w-auto h-auto object-contain"
-                />
-              </div>
-
-              {/* Details */}
-              <div className="flex items-center text-gray-500 text-sm mt-6 space-x-4">
-                <div className="flex items-center space-x-1">
-                  <GiCarDoor className="w-4 h-4 text-gray-500" />
-                  <p>{car.fuelCapacity}L</p>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <BiCog className="w-4 h-4 text-gray-500" />
-                  <p>{car.transmission}</p>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <FaUsers className="w-4 h-4 text-gray-500" />
-                  <p>{car.seatingCapacity} people</p>
-                </div>
-              </div>
-
-              {/* Price */}
-              <div className="flex justify-between items-center mt-4">
-                <p className="text-lg font-bold">
-                  ${car.pricePerDay}.00{" "}
-                  <span className="text-gray-400 text-[14px]">/day</span>
-                </p>
-                <Link href={`/car/${car._id}`}>
-                  <button className="bg-blue-700 text-white px-4 py-2 text-sm rounded-md">
-                    Rent Now
-                  </button>
-                </Link>
-              </div>
-            </div>
+              car={car}
+              isCarInWishlist={isCarInWishlist}
+              toggleWishlist={toggleWishlist}
+            />
           ))}
         </div>
+
         <div className="flex justify-center mt-8">
           <Link href="/category">
             <button className="bg-blue-700 text-white px-4 py-2 rounded-md">
-              Show More Cars
+              Show More...
             </button>
           </Link>
         </div>
@@ -257,4 +171,70 @@ export default function FetchCarsPage() {
   );
 }
 
+// Card Component
+function CarCard({
+  car,
+  isCarInWishlist,
+  toggleWishlist,
+}: {
+  car: Car;
+  isCarInWishlist: (car: Car) => boolean;
+  toggleWishlist: (car: Car) => void;
+}) {
+  return (
+    <div className="bg-white shadow-md rounded-lg p-6 relative">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold">{car.name}</h3>
+        <button onClick={() => toggleWishlist(car)}>
+          {isCarInWishlist(car) ? (
+            <FaHeart className="w-6 h-6 text-red-500" />
+          ) : (
+            <FaRegHeart className="w-6 h-6 text-gray-400" />
+          )}
+        </button>
+      </div>
+
+      <div className="mt-2">
+        <p className="text-sm text-gray-500">{car.type}</p>
+      </div>
+
+      <div className="mt-4 mb-4 flex justify-center relative">
+        <Image
+          src={car.imageUrl}
+          alt={car.name}
+          width={232}
+          height={128}
+          className="w-auto h-auto object-contain"
+        />
+      </div>
+
+      <div className="flex items-center text-gray-500 text-sm mt-6 space-x-4">
+        <div className="flex items-center space-x-1">
+          <GiCarDoor className="w-4 h-4 text-gray-500" />
+          <p>{car.fuelCapacity}L</p>
+        </div>
+        <div className="flex items-center space-x-1">
+          <BiCog className="w-4 h-4 text-gray-500" />
+          <p>{car.transmission}</p>
+        </div>
+        <div className="flex items-center space-x-1">
+          <FaUsers className="w-4 h-4 text-gray-500" />
+          <p>{car.seatingCapacity} people</p>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center mt-4">
+        <p className="text-lg font-bold">
+          ${car.pricePerDay}.00{" "}
+          <span className="text-gray-400 text-[14px]">/day</span>
+        </p>
+        <Link href={`/car/${car._id}`}>
+          <button className="bg-blue-700 text-white px-4 py-2 text-sm rounded-md">
+            Rent Now
+          </button>
+        </Link>
+      </div>
+    </div>
+  );
+}
 
