@@ -225,7 +225,7 @@ export default function CarDetailsPage({ params }: { params: { id: string } }) {
           {/* Price and Rent Button */}
           <div className="mt-4">
             <span className="text-lg sm:text-xl font-bold">${car.pricePerDay.toFixed(2)}</span>{" "}
-            <Link href={`/payment/${car._id}`} passHref>
+            <Link href={`/dashboard/${params.id}`} passHref>
               <button className="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-md font-semibold ml-2 sm:ml-4">
                 Rent Now
               </button>

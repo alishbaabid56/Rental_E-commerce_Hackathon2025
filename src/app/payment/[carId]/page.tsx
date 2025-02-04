@@ -265,7 +265,7 @@ export default function PaymentPage({ params }: { params: { carId: string } }) {
           {/* Rent Now Button */}
           
           <Link
-  href={`/dashboard/${params.carId}`}  // Correct dynamic route for carId
+  href="/" // Correct dynamic route for carId
   className="bg-blue-500 text-white px-4 py-2 rounded-lg text-center w-full inline-block"
 >
   Rent now

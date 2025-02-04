@@ -172,6 +172,12 @@ export default function DashboardPage({ params }: { params: { carId: string } })
                 <span>Capacity</span>
                 <p>{car.seatingCapacity} Persons</p>
               </div>
+              <Link
+  href="https://book.stripe.com/test_3cs5lNa6o4hwd6E000"
+  className="mt-6 block w-full bg-blue-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+>
+  Rent Now
+</Link>
             </div>
           </div>
 
