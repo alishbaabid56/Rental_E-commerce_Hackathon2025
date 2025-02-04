@@ -173,10 +173,17 @@ export default function DashboardPage({ params }: { params: { carId: string } })
                 <p>{car.seatingCapacity} Persons</p>
               </div>
               <Link
-  href="https://book.stripe.com/test_3cs5lNa6o4hwd6E000"
-  className="mt-6 block w-full bg-blue-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+  href={`/payment/${car._id}`}
+  className="mt-6 block w-full sm:w-auto md:w-full bg-blue-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
 >
   Rent Now
+</Link>
+
+<Link
+  href="https://book.stripe.com/test_3cs5lNa6o4hwd6E000"
+  className="mt-6 block w-full sm:w-auto md:w-full bg-green-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+>
+  CheckOut
 </Link>
             </div>
           </div>
